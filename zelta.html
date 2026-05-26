@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zelta — AI Intelligence for Water Infrastructure</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --deep-ocean: #071E2F;
+      --ocean:      #0A3347;
+      --teal:       #0891B2;
+      --cyan:       #06B6D4;
+      --cyan-light: #22D3EE;
+      --mint:       #10B981;
+      --lime:       #84CC16;
+      --amber:      #F59E0B;
+      --bg:         #F0FAFE;
+      --text:       #0C2D3E;
+      --text-mid:   #3D7A8A;
+      --border:     rgba(6,182,212,0.15);
+      --shadow:     0 4px 28px rgba(8,145,178,0.11);
+      --r:          16px;
+      --font-d:     'Fraunces', Georgia, serif;
+      --font-b:     'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-b); background: var(--bg); color: var(--text); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ── UTILS ── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .stag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--cyan); background: rgba(6,182,212,.07);
+      border: 1px solid rgba(6,182,212,.22); padding: 6px 14px; border-radius: 100px; margin-bottom: 20px;
+    }
+    .stag::before {
+      content:''; width:6px; height:6px; border-radius:50%; background: var(--cyan);
+      animation: beacon 2s ease-in-out infinite;
+    }
+    .reveal {
+      opacity:0; transform:translateY(28px);
+      transition: opacity .7s cubic-bezier(.25,.46,.45,.94), transform .7s cubic-bezier(.25,.46,.45,.94);
+    }
+    .reveal.on { opacity:1; transform:none; }
+    .d1 { transition-delay:.08s; } .d2 { transition-delay:.18s; }
+    .d3 { transition-delay:.28s; } .d4 { transition-delay:.38s; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:999;
+      padding: 22px 0; transition: all .4s;
+    }
+    nav.scrolled {
+      background: rgba(7,30,47,.94); backdrop-filter: blur(18px);
+      padding: 14px 0; border-bottom: 1px solid rgba(6,182,212,.1);
+    }
+    .nav-inner { display:flex; align-items:center; justify-content:space-between; }
+    .nav-logo {
+      display:flex; align-items:center; gap:10px;
+      font-family: var(--font-d); font-weight:700; font-size:24px;
+      color:white; letter-spacing:-.5px;
+    }
+    .nav-links { display:flex; align-items:center; gap:34px; }
+    .nav-links a { font-size:14px; font-weight:500; color:rgba(255,255,255,.65); transition:color .2s; }
+    .nav-links a:hover { color:white; }
+    .nav-cta {
+      background: var(--cyan) !important; color:white !important;
+      padding:9px 22px; border-radius:100px; font-weight:600 !important;
+      transition: background .2s, transform .2s !important;
+    }
+    .nav-cta:hover { background: var(--cyan-light) !important; transform:translateY(-1px); }
+
+    /* ── HERO ── */
+    #hero {
+      position:relative; min-height:100vh;
+      background: linear-gradient(135deg, #06202E 0%, #0A3347 45%, #0D4F6A 75%, #0A3347 100%);
+      background-size: 300% 300%;
+      animation: gradShift 9s ease infinite;
+      display:flex; align-items:center; overflow:hidden;
+    }
+    #ripple-canvas {
+      position:absolute; inset:0; pointer-events:none; opacity:.75;
+    }
+    .hero-content {
+      position:relative; z-index:2; text-align:center;
+      padding: 130px 24px 90px; max-width: 920px; margin: 0 auto;
+    }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:10px;
+      background: rgba(6,182,212,.1); border:1px solid rgba(6,182,212,.28);
+      color: var(--cyan-light); font-size:11px; font-weight:700; letter-spacing:.09em;
+      text-transform:uppercase; padding:9px 20px; border-radius:100px;
+      margin-bottom:30px; animation: floatUp 4s ease-in-out infinite;
+    }
+    .hero-drop {
+      width:9px; height:9px; background: var(--cyan-light);
+      border-radius:50% 50% 50% 0; transform:rotate(-45deg);
+    }
+    .hero-h1 {
+      font-family: var(--font-d); font-size: clamp(42px, 6.5vw, 78px);
+      font-weight:700; line-height:1.06; letter-spacing:-2.5px; color:white; margin-bottom:24px;
+    }
+    .shimmer {
+      background: linear-gradient(90deg, #22D3EE, #10B981, #84CC16, #22D3EE);
+      background-size:200% auto; -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent; background-clip:text;
+      animation: shimmer 4s linear infinite;
+    }
+    .hero-p {
+      font-size:18px; line-height:1.72; color:rgba(255,255,255,.6);
+      max-width:580px; margin:0 auto 44px; font-weight:300;
+    }
+    .hero-ctas { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:64px; flex-wrap:wrap; }
+    .btn-pri {
+      background: var(--amber); color:#071E2F; font-weight:700; font-size:15px;
+      padding:14px 30px; border-radius:100px; border:none; cursor:pointer;
+      transition:all .25s; display:inline-flex; align-items:center; gap:8px;
+      font-family: var(--font-b);
+    }
+    .btn-pri:hover { background:#FBBF24; transform:translateY(-2px); box-shadow:0 8px 24px rgba(245,158,11,.32); }
+    .btn-sec {
+      background:transparent; color:white; font-weight:600; font-size:15px;
+      padding:13px 28px; border-radius:100px; border:1.5px solid rgba(255,255,255,.28);
+      cursor:pointer; transition:all .25s; display:inline-flex; align-items:center; gap:8px;
+      font-family: var(--font-b);
+    }
+    .btn-sec:hover { border-color:rgba(255,255,255,.65); background:rgba(255,255,255,.05); }
+    .hero-stats { display:flex; align-items:center; justify-content:center; gap:44px; flex-wrap:wrap; }
+    .hstat-val { font-family: var(--font-d); font-size:30px; font-weight:700; color: var(--cyan-light); }
+    .hstat-lbl { font-size:12px; color:rgba(255,255,255,.45); font-weight:500; margin-top:2px; }
+    .hdiv { width:1px; height:38px; background:rgba(255,255,255,.1); }
+    .hero-wave { position:absolute; bottom:-2px; left:0; right:0; overflow:hidden; line-height:0; }
+    .hero-wave svg { display:block; width:100%; }
+
+    /* ── MARQUEE ── */
+    #marquee { background: var(--cyan); padding:13px 0; overflow:hidden; }
+    .mq-track {
+      display:flex; width:max-content;
+      animation: mqScroll 32s linear infinite;
+    }
+    .mq-item {
+      display:flex; align-items:center; gap:14px; padding:0 30px;
+      font-size:13px; font-weight:600; color:rgba(255,255,255,.9); white-space:nowrap;
+    }
+
+    /* ── PROBLEM ── */
+    #problem { padding: 100px 0; background: var(--bg); }
+    .prob-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
+    .prob-h2 {
+      font-family: var(--font-d); font-size: clamp(30px, 4vw, 50px);
+      font-weight:700; letter-spacing:-1.5px; line-height:1.1; margin-bottom:20px;
+    }
+    .prob-h2 em { font-style:italic; color: var(--teal); }
+    .prob-p { font-size:15px; line-height:1.78; color: var(--text-mid); margin-bottom:20px; }
+    .prob-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .prob-card {
+      background:white; border:1px solid var(--border); border-radius: var(--r);
+      padding:22px; box-shadow: var(--shadow); transition:transform .3s, box-shadow .3s; cursor:default;
+    }
+    .prob-card:hover { transform:translateY(-4px); box-shadow:0 14px 42px rgba(8,145,178,.15); }
+    .pc-icon { font-size:26px; margin-bottom:10px; }
+    .pc-val { font-family: var(--font-d); font-size:34px; font-weight:700; line-height:1; }
+    .pc-val.red { color:#EF4444; } .pc-val.amb { color: var(--amber); }
+    .pc-val.teal { color: var(--teal); } .pc-val.mint { color: var(--mint); }
+    .pc-lbl { font-size:12px; color: var(--text-mid); margin-top:4px; font-weight:500; }
+
+    /* ── MODULES ── */
+    #modules { padding: 100px 0; background:white; }
+    .sec-hd { text-align:center; margin-bottom:56px; }
+    .sec-h2 {
+      font-family: var(--font-d); font-size: clamp(28px, 4vw, 48px);
+      font-weight:700; letter-spacing:-1.5px; line-height:1.1; margin-bottom:14px;
+    }
+    .sec-p { font-size:16px; color: var(--text-mid); max-width:540px; margin:0 auto; line-height:1.72; }
+    .mod-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
+    .mod-card {
+      background: var(--bg); border:1px solid var(--border); border-radius:20px;
+      padding:36px; position:relative; overflow:hidden;
+      transition:all .3s; cursor:pointer;
+    }
+    .mod-card::before {
+      content:''; position:absolute; top:0; left:0; right:0;
+      height:3px; border-radius:20px 20px 0 0;
+    }
+    .mod-card[data-m="mon"]::before { background: var(--teal); }
+    .mod-card[data-m="lk"]::before  { background: var(--cyan); }
+    .mod-card[data-m="co"]::before  { background: var(--mint); }
+    .mod-card[data-m="as"]::before  { background: var(--lime); }
+    .mod-card:hover { transform:translateY(-6px); box-shadow:0 22px 52px rgba(8,145,178,.13); background:white; }
+    .mod-icon {
+      width:58px; height:58px; border-radius:14px;
+      display:flex; align-items:center; justify-content:center; margin-bottom:18px;
+    }
+    .mod-card[data-m="mon"] .mod-icon { background:rgba(8,145,178,.1); }
+    .mod-card[data-m="lk"]  .mod-icon { background:rgba(6,182,212,.1); }
+    .mod-card[data-m="co"]  .mod-icon { background:rgba(16,185,129,.1); }
+    .mod-card[data-m="as"]  .mod-icon { background:rgba(132,204,22,.1); }
+    .mod-tag { font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+    .mod-card[data-m="mon"] .mod-tag { color: var(--teal); }
+    .mod-card[data-m="lk"]  .mod-tag { color: var(--cyan); }
+    .mod-card[data-m="co"]  .mod-tag { color: var(--mint); }
+    .mod-card[data-m="as"]  .mod-tag { color: var(--lime); }
+    .mod-h3 {
+      font-family: var(--font-d); font-size:22px; font-weight:600;
+      letter-spacing:-.4px; margin-bottom:10px;
+    }
+    .mod-desc { font-size:14px; line-height:1.72; color: var(--text-mid); margin-bottom:18px; }
+    .mod-feats { display:flex; flex-direction:column; gap:7px; margin-bottom:22px; }
+    .mod-feat {
+      display:flex; align-items:center; gap:10px;
+      font-size:13px; font-weight:500; color: var(--text);
+    }
+    .mod-feat::before { content:'●'; font-size:5px; opacity:.4; color: var(--teal); }
+    .mod-link { font-size:13px; font-weight:700; color: var(--teal); display:flex; align-items:center; gap:6px; transition:gap .2s; }
+    .mod-link:hover { gap:11px; }
+
+    /* ── NETWORK / HOW IT WORKS ── */
+    #network { padding: 100px 0; background: var(--bg); }
+    .net-grid { display:grid; grid-template-columns:1fr 1.15fr; gap:72px; align-items:center; }
+    .net-steps { display:flex; flex-direction:column; gap:26px; margin-top:32px; }
+    .net-step { display:flex; gap:18px; align-items:flex-start; }
+    .snum {
+      width:36px; height:36px; border-radius:50%; background: var(--ocean);
+      color:white; font-size:13px; font-weight:700;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+      font-family: var(--font-d);
+    }
+    .sbody h4 { font-family: var(--font-d); font-size:17px; font-weight:600; margin-bottom:5px; }
+    .sbody p  { font-size:13px; line-height:1.72; color: var(--text-mid); }
+    .net-vis {
+      background:white; border:1px solid var(--border); border-radius:20px;
+      padding:28px; box-shadow: var(--shadow);
+    }
+    .nv-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .nv-title { font-size:13px; font-weight:700; color: var(--ocean); }
+    .nv-live { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color: var(--mint); }
+    .live-dot { width:6px; height:6px; background: var(--mint); border-radius:50%; animation: beacon 2s infinite; }
+    .nv-tags { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .nv-tag {
+      padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600;
+    }
+    .nv-tag.red  { background:rgba(239,68,68,.07); border:1px solid rgba(239,68,68,.2); color:#EF4444; }
+    .nv-tag.grn  { background:rgba(16,185,129,.07); border:1px solid rgba(16,185,129,.2); color: var(--mint); }
+
+    /* ── DASHBOARD ── */
+    #dashboard { padding:100px 0; background: var(--ocean); position:relative; overflow:hidden; }
+    #dashboard::before {
+      content:''; position:absolute; inset:0;
+      background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2322D3EE' fill-opacity='.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .dash-intro { text-align:center; margin-bottom:48px; }
+    .dash-intro .sec-h2 { color:white; }
+    .dash-intro .sec-p  { color:rgba(255,255,255,.5); }
+    .dbmk {
+      background:#0D1117; border-radius:20px;
+      border:1px solid rgba(255,255,255,.07); overflow:hidden;
+      box-shadow:0 32px 80px rgba(0,0,0,.45); max-width:980px; margin:0 auto;
+    }
+    .dbmk-bar {
+      background:#161B22; padding:11px 18px;
+      display:flex; align-items:center; gap:12px;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .dots { display:flex; gap:6px; }
+    .dot { width:10px; height:10px; border-radius:50%; }
+    .dot.r { background:#FF5F57; } .dot.a { background:#FFBD2E; } .dot.g { background:#28C840; }
+    .url-bar {
+      flex:1; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
+      border-radius:6px; padding:5px 14px; font-size:12px;
+      color:rgba(255,255,255,.25); font-family:monospace;
+    }
+    .dbmk-body { display:grid; grid-template-columns:52px 1fr; min-height:380px; }
+    .dbmk-side {
+      background:#0D1117; border-right:1px solid rgba(255,255,255,.05);
+      padding:18px 0; display:flex; flex-direction:column; align-items:center; gap:18px;
+    }
+    .s-ico {
+      width:30px; height:30px; border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; cursor:pointer; transition:background .2s;
+    }
+    .s-ico.act { background:rgba(6,182,212,.14); }
+    .s-ico:hover { background:rgba(255,255,255,.05); }
+    .dbmk-main { padding:20px; }
+    .dm-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .dm-title { font-size:13px; font-weight:700; color:rgba(255,255,255,.9); }
+    .dm-sub   { font-size:11px; color:rgba(255,255,255,.3); margin-top:2px; }
+    .live-badge {
+      display:flex; align-items:center; gap:5px;
+      background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.2);
+      color:#10B981; font-size:10px; font-weight:700; padding:4px 10px;
+      border-radius:100px; letter-spacing:.05em;
+    }
+    .dm-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:14px; margin-bottom:14px; }
+    .dm-map {
+      background:#161B22; border:1px solid rgba(255,255,255,.05);
+      border-radius:12px; padding:14px; position:relative; overflow:hidden;
+    }
+    .dm-lbl { font-size:10px; font-weight:700; color:rgba(255,255,255,.35); letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; }
+    .dm-metrics { display:flex; flex-direction:column; gap:9px; }
+    .dm-mc {
+      background:#161B22; border:1px solid rgba(255,255,255,.05);
+      border-radius:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between;
+    }
+    .dm-mc.alrt { border-color:rgba(239,68,68,.2); background:rgba(239,68,68,.04); }
+    .dm-ml { font-size:11px; color:rgba(255,255,255,.38); margin-bottom:3px; }
+    .dm-mv { font-family: var(--font-d); font-size:22px; font-weight:700; color:white; line-height:1; }
+    .dm-mv.cy { color: var(--cyan-light); } .dm-mv.rd { color:#F87171; } .dm-mv.gn { color:#34D399; }
+    .dm-ch { font-size:10px; font-weight:600; padding:2px 8px; border-radius:100px; }
+    .dm-ch.up { color: var(--mint); background:rgba(16,185,129,.1); }
+    .dm-ch.dn { color:#F87171; background:rgba(239,68,68,.1); }
+    .dm-alerts { background:#161B22; border:1px solid rgba(255,255,255,.05); border-radius:12px; padding:14px; }
+    .dm-atitle { font-size:10px; font-weight:700; color:rgba(255,255,255,.35); letter-spacing:.08em; text-transform:uppercase; margin-bottom:11px; }
+    .dm-ai { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:11px; }
+    .dm-ai:last-child { border-bottom:none; }
+    .ai-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .ai-txt { color:rgba(255,255,255,.68); flex:1; }
+    .ai-t   { color:rgba(255,255,255,.22); font-size:10px; }
+
+    /* ── METRICS ── */
+    #metrics { padding: 100px 0; background: var(--deep-ocean); position:relative; overflow:hidden; }
+    #metrics::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse at 50% 50%, rgba(6,182,212,.06) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .met-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:32px; text-align:center; }
+    .met-num {
+      font-family: var(--font-d); font-size: clamp(44px,5.5vw,68px);
+      font-weight:700; line-height:1; margin-bottom:10px;
+    }
+    .met-num.c1 { color: var(--cyan-light); } .met-num.c2 { color: var(--mint); }
+    .met-num.c3 { color: var(--lime); }       .met-num.c4 { color: var(--amber); }
+    .met-sf { font-size:26px; font-weight:300; }
+    .met-lbl { font-size:14px; color:rgba(255,255,255,.38); font-weight:500; line-height:1.5; }
+
+    /* ── INDUSTRIES ── */
+    #industries { padding: 100px 0; background:white; }
+    .ind-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:50px; }
+    .ind-card {
+      border:1px solid var(--border); border-radius: var(--r); padding:28px;
+      transition:all .3s; position:relative; overflow:hidden; cursor:default;
+    }
+    .ind-card::after {
+      content:''; position:absolute; inset:0; border-radius: var(--r);
+      background: linear-gradient(135deg, rgba(6,182,212,.04), transparent);
+      opacity:0; transition:opacity .3s;
+    }
+    .ind-card:hover { border-color: var(--cyan); box-shadow:0 14px 36px rgba(6,182,212,.1); transform:translateY(-4px); }
+    .ind-card:hover::after { opacity:1; }
+    .ind-icon { font-size:32px; margin-bottom:14px; }
+    .ind-name { font-family: var(--font-d); font-size:18px; font-weight:600; margin-bottom:8px; letter-spacing:-.3px; }
+    .ind-desc { font-size:13px; line-height:1.68; color: var(--text-mid); }
+
+    /* ── FOUNDER ── */
+    #founder {
+      padding: 100px 0;
+      background: linear-gradient(135deg, #E0F7FA 0%, #F0FFF4 60%, #E8F5E9 100%);
+      position:relative; overflow:hidden;
+    }
+    #founder::before {
+      content:''; position:absolute; top:-80px; right:-80px;
+      width:420px; height:420px; border-radius:50%;
+      background:radial-gradient(circle, rgba(6,182,212,.08) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    #founder::after {
+      content:''; position:absolute; bottom:-60px; left:-60px;
+      width:300px; height:300px; border-radius:50%;
+      background:radial-gradient(circle, rgba(16,185,129,.07) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .fo-grid { display:grid; grid-template-columns:1fr 1.55fr; gap:80px; align-items:center; }
+    .fo-left { display:flex; flex-direction:column; align-items:center; gap:22px; }
+    .fo-aw { position:relative; width:220px; height:220px; }
+    .fo-av {
+      width:200px; height:200px; border-radius:50%;
+      background: linear-gradient(135deg, #0891B2, #0A3347);
+      display:flex; align-items:center; justify-content:center;
+      margin:10px; position:relative; overflow:hidden;
+    }
+    .fo-av::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(circle at 30% 30%, rgba(34,211,238,.28), transparent 60%);
+    }
+    .fo-av::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:40%;
+      background:linear-gradient(to top, rgba(10,51,71,.6), transparent);
+    }
+    .fo-ini {
+      font-family: var(--font-d); font-size:58px; font-style:italic;
+      font-weight:600; color:white; position:relative; z-index:1; letter-spacing:-2px;
+    }
+    .fo-ring { position:absolute; inset:0; }
+    .fo-name-card {
+      background:white; border:1px solid var(--border); border-radius:14px;
+      padding:16px 24px; text-align:center; box-shadow: var(--shadow); width:100%;
+    }
+    .fo-name { font-family: var(--font-d); font-size:20px; font-weight:700; letter-spacing:-.4px; }
+    .fo-title { font-size:13px; color: var(--teal); font-weight:600; margin-top:2px; }
+    .fo-socials { display:flex; gap:10px; justify-content:center; margin-top:10px; }
+    .fo-soc {
+      width:32px; height:32px; border-radius:8px; background: var(--bg);
+      border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+      font-size:13px; cursor:pointer; transition:all .2s;
+    }
+    .fo-soc:hover { background: var(--ocean); color:white; border-color: var(--ocean); }
+    .fo-q {
+      font-family: var(--font-d); font-style:italic; font-size:19px; line-height:1.65;
+      color: var(--ocean); border-left:3px solid var(--cyan); padding-left:22px; margin-bottom:28px;
+    }
+    .fo-bio { font-size:15px; line-height:1.78; color: var(--text-mid); margin-bottom:16px; }
+    .fo-creds { display:flex; flex-wrap:wrap; gap:9px; margin-top:24px; }
+    .fo-cred {
+      background:rgba(8,145,178,.08); border:1px solid rgba(8,145,178,.15);
+      color: var(--ocean); font-size:12px; font-weight:600; padding:6px 14px; border-radius:100px;
+    }
+    .fo-h2 {
+      font-family: var(--font-d); font-size: clamp(26px,3.5vw,42px);
+      font-weight:700; letter-spacing:-1.5px; line-height:1.1; margin-bottom:22px;
+    }
+
+    /* ── CTA ── */
+    #cta {
+      padding: 100px 0; text-align:center; position:relative; overflow:hidden;
+      background: linear-gradient(135deg, #0891B2 0%, #059669 100%);
+    }
+    #cta::before {
+      content:''; position:absolute; top:-60%; left:-30%; width:160%; height:200%;
+      background:url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='60' cy='60' r='50' fill='none' stroke='rgba(255,255,255,.05)' stroke-width='1'/%3E%3Ccircle cx='60' cy='60' r='25' fill='none' stroke='rgba(255,255,255,.04)' stroke-width='1'/%3E%3C/svg%3E") repeat;
+      background-size:120px 120px; animation:rotateGlobe 60s linear infinite;
+    }
+    .cta-inner { position:relative; z-index:1; }
+    .cta-h2 {
+      font-family: var(--font-d); font-size: clamp(32px,5.5vw,64px);
+      font-weight:700; letter-spacing:-2.5px; color:white; line-height:1.04; margin-bottom:16px;
+    }
+    .cta-p { font-size:18px; color:rgba(255,255,255,.65); max-width:460px; margin:0 auto 48px; line-height:1.65; }
+    .cta-row { display:flex; gap:11px; max-width:460px; margin:0 auto 20px; flex-wrap:wrap; justify-content:center; }
+    .cta-inp {
+      flex:1; min-width:200px; padding:14px 20px; border-radius:100px;
+      border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.14);
+      backdrop-filter:blur(8px); color:white; font-size:15px; font-family: var(--font-b);
+      outline:none; transition:border-color .2s, background .2s;
+    }
+    .cta-inp::placeholder { color:rgba(255,255,255,.45); }
+    .cta-inp:focus { border-color:rgba(255,255,255,.5); background:rgba(255,255,255,.2); }
+    .btn-cta {
+      background:white; color: var(--teal); font-family: var(--font-b);
+      font-weight:700; font-size:15px; padding:14px 28px; border-radius:100px;
+      border:none; cursor:pointer; transition:all .25s; white-space:nowrap;
+    }
+    .btn-cta:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.18); }
+    .cta-note { font-size:12px; color:rgba(255,255,255,.45); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--deep-ocean); padding:60px 0 28px; border-top:1px solid rgba(255,255,255,.04); }
+    .ft-top { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px; }
+    .ft-desc { font-size:14px; line-height:1.72; color:rgba(255,255,255,.32); margin-top:14px; max-width:230px; }
+    .ft-col-t { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:16px; }
+    .ft-links { display:flex; flex-direction:column; gap:11px; }
+    .ft-links a { font-size:14px; color:rgba(255,255,255,.45); transition:color .2s; }
+    .ft-links a:hover { color: var(--cyan-light); }
+    .ft-bot { border-top:1px solid rgba(255,255,255,.05); padding-top:22px; display:flex; align-items:center; justify-content:space-between; }
+    .ft-copy { font-size:13px; color:rgba(255,255,255,.22); }
+    .ft-tg { font-size:13px; color:rgba(255,255,255,.18); font-style:italic; font-family: var(--font-d); }
+
+    /* ── WAVE DIVIDERS ── */
+    .wdiv { overflow:hidden; line-height:0; display:block; }
+    .wdiv svg { display:block; width:100%; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes gradShift {
+      0%,100% { background-position:0% 50%; }
+      50%      { background-position:100% 50%; }
+    }
+    @keyframes shimmer {
+      0%   { background-position:-200% center; }
+      100% { background-position:200% center; }
+    }
+    @keyframes floatUp {
+      0%,100% { transform:translateY(0); }
+      50%     { transform:translateY(-7px); }
+    }
+    @keyframes beacon {
+      0%,100% { opacity:1; }
+      50%     { opacity:.35; }
+    }
+    @keyframes mqScroll {
+      0%   { transform:translateX(0); }
+      100% { transform:translateX(-50%); }
+    }
+    @keyframes rotateGlobe {
+      from { transform:rotate(0deg); }
+      to   { transform:rotate(360deg); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px) {
+      .prob-grid, .net-grid, .fo-grid { grid-template-columns:1fr; gap:40px; }
+      .mod-grid { grid-template-columns:1fr; }
+      .met-grid { grid-template-columns:repeat(2,1fr); gap:32px; }
+      .ind-grid { grid-template-columns:1fr 1fr; }
+      .ft-top   { grid-template-columns:1fr 1fr; gap:32px; }
+      .nav-links { display:none; }
+      .hero-stats { gap:24px; }
+      .dm-grid { grid-template-columns:1fr; }
+      .fo-left { flex-direction:row; align-items:center; flex-wrap:wrap; justify-content:center; }
+    }
+    @media(max-width:540px) {
+      .ind-grid { grid-template-columns:1fr; }
+      .prob-cards { grid-template-columns:1fr; }
+      .ft-bot { flex-direction:column; gap:8px; text-align:center; }
+      .met-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ━━━ NAV ━━━ -->
+<nav id="main-nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M16 3C16 3 6 14 6 20.5C6 25.8 10.5 30 16 30C21.5 30 26 25.8 26 20.5C26 14 16 3 16 3Z" fill="url(#ng1)" stroke="rgba(34,211,238,.35)" stroke-width="1"/>
+        <path d="M12 21.5C12.5 23.5 14 25 16 25" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="ng1" x1="6" y1="3" x2="26" y2="30" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#22D3EE"/>
+            <stop offset="100%" stop-color="#0891B2"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      zelta
+    </a>
+    <ul class="nav-links">
+      <li><a href="#modules">Solutions</a></li>
+      <li><a href="#network">How It Works</a></li>
+      <li><a href="#industries">Industries</a></li>
+      <li><a href="#founder">About</a></li>
+      <li><a href="#cta" class="nav-cta">Request Demo</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ━━━ HERO ━━━ -->
+<section id="hero">
+  <canvas id="ripple-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-drop"></span>
+      AI-Powered Water &amp; Waste Infrastructure Intelligence
+    </div>
+    <h1 class="hero-h1">
+      The Operating System<br>
+      for <span class="shimmer">Water Infrastructure</span>
+    </h1>
+    <p class="hero-p">Zelta transforms raw sensor data into real-time decisions — detecting leaks, preventing failures, and automating compliance. No rip-and-replace. Live in 90 days.</p>
+    <div class="hero-ctas">
+      <button class="btn-pri" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">
+        Request a Demo
+        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-sec" onclick="document.getElementById('modules').scrollIntoView({behavior:'smooth'})">
+        Explore Modules
+        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 3v10M3 9l5 4 5-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hstat-val">30%</div>
+        <div class="hstat-lbl">Water lost to leaks</div>
+      </div>
+      <div class="hdiv"></div>
+      <div>
+        <div class="hstat-val">$6.7T</div>
+        <div class="hstat-lbl">Infrastructure gap by 2030</div>
+      </div>
+      <div class="hdiv"></div>
+      <div>
+        <div class="hstat-val">90+</div>
+        <div class="hstat-lbl">EPA contaminant standards</div>
+      </div>
+      <div class="hdiv"></div>
+      <div>
+        <div class="hstat-val">2min</div>
+        <div class="hstat-lbl">Pipe break frequency, US</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,36 C360,72 720,0 1080,36 C1260,54 1380,44 1440,36 L1440,72 L0,72 Z" fill="#06B6D4"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ━━━ MARQUEE ━━━ -->
+<section id="marquee">
+  <div class="mq-track">
+    <span class="mq-item">💧 Water main breaks every 2 minutes in the US</span>
+    <span class="mq-item">🔬 Non-revenue water loss: 30% industry average</span>
+    <span class="mq-item">📋 90+ EPA contaminant standards to comply with</span>
+    <span class="mq-item">🌊 $6.7 trillion global infrastructure gap by 2030</span>
+    <span class="mq-item">⚠️ Average US water pipe age: 45 years</span>
+    <span class="mq-item">💡 AI detects leaks 3–8 weeks before field discovery</span>
+    <span class="mq-item">🏭 50,000+ small utilities run compliance on spreadsheets</span>
+    <span class="mq-item">💧 Water main breaks every 2 minutes in the US</span>
+    <span class="mq-item">🔬 Non-revenue water loss: 30% industry average</span>
+    <span class="mq-item">📋 90+ EPA contaminant standards to comply with</span>
+    <span class="mq-item">🌊 $6.7 trillion global infrastructure gap by 2030</span>
+    <span class="mq-item">⚠️ Average US water pipe age: 45 years</span>
+    <span class="mq-item">💡 AI detects leaks 3–8 weeks before field discovery</span>
+    <span class="mq-item">🏭 50,000+ small utilities run compliance on spreadsheets</span>
+  </div>
+</section>
+
+<!-- wave → bg -->
+<div class="wdiv" style="background:#06B6D4">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,0 C480,36 960,0 1440,18 L1440,36 L0,36 Z" fill="#F0FAFE"/>
+  </svg>
+</div>
+
+<!-- ━━━ PROBLEM ━━━ -->
+<section id="problem">
+  <div class="container">
+    <div class="prob-grid">
+      <div class="reveal">
+        <div class="stag">The Problem</div>
+        <h2 class="prob-h2">Water infrastructure is <em>broken</em> — and nobody has a full view</h2>
+        <p class="prob-p">Utilities run SCADA, GIS, billing, and maintenance in isolated silos. No system connects them. Decisions run on gut feel and institutional knowledge held by engineers nearing retirement.</p>
+        <p class="prob-p">Zelta sits on top of your existing infrastructure without replacing a single piece. We are the intelligence layer that was always missing.</p>
+      </div>
+      <div class="prob-cards reveal d2">
+        <div class="prob-card">
+          <div class="pc-icon">💧</div>
+          <div class="pc-val red">30%</div>
+          <div class="pc-lbl">Water lost before leak detection</div>
+        </div>
+        <div class="prob-card">
+          <div class="pc-icon">📅</div>
+          <div class="pc-val amb">45yr</div>
+          <div class="pc-lbl">Average US water pipe age</div>
+        </div>
+        <div class="prob-card">
+          <div class="pc-icon">⚡</div>
+          <div class="pc-val teal">2min</div>
+          <div class="pc-lbl">Pipe break frequency, US</div>
+        </div>
+        <div class="prob-card">
+          <div class="pc-icon">🌍</div>
+          <div class="pc-val mint">$6.7T</div>
+          <div class="pc-lbl">Global infrastructure funding gap</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave → white -->
+<div class="wdiv" style="background:#F0FAFE">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,18 C240,36 480,0 720,18 C960,36 1200,0 1440,18 L1440,36 L0,36 Z" fill="white"/>
+  </svg>
+</div>
+
+<!-- ━━━ MODULES ━━━ -->
+<section id="modules">
+  <div class="container">
+    <div class="sec-hd reveal">
+      <div class="stag">Product Modules</div>
+      <h2 class="sec-h2">Four Modules. One Platform.<br>Zero Guesswork.</h2>
+      <p class="sec-p">Each module is independently powerful. Together, they form a complete intelligence layer for your entire water operation.</p>
+    </div>
+    <div class="mod-grid">
+
+      <!-- MONITOR -->
+      <div class="mod-card reveal d1" data-m="mon">
+        <div class="mod-icon">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <circle cx="15" cy="15" r="5" stroke="#0891B2" stroke-width="2"/>
+            <circle cx="15" cy="15" r="10" stroke="#0891B2" stroke-width="1" opacity=".35">
+              <animate attributeName="r" values="5;13;5" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values=".5;0;.5" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="15" cy="15" r="2.5" fill="#0891B2"/>
+            <line x1="15" y1="4" x2="15" y2="1" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="15" y1="29" x2="15" y2="26" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="4" y1="15" x2="1" y2="15" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="29" y1="15" x2="26" y2="15" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="mod-tag">Sentinel Monitor</div>
+        <h3 class="mod-h3">Infrastructure Monitoring</h3>
+        <p class="mod-desc">Real-time, continuous visibility across your entire distribution network — every pipe segment, pump station, and district metering area.</p>
+        <ul class="mod-feats">
+          <li class="mod-feat">SCADA &amp; IoT sensor integration</li>
+          <li class="mod-feat">ML anomaly detection &amp; instant alerting</li>
+          <li class="mod-feat">Hydraulic digital twin simulation</li>
+          <li class="mod-feat">Role-based mobile field crew app</li>
+        </ul>
+        <a href="#" class="mod-link">Explore module →</a>
+      </div>
+
+      <!-- LEAK -->
+      <div class="mod-card reveal d2" data-m="lk">
+        <div class="mod-icon">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <path d="M15 3C15 3 7 12.5 7 18.5C7 22.6 10.7 26 15 26C19.3 26 23 22.6 23 18.5C23 12.5 15 3 15 3Z" stroke="#06B6D4" stroke-width="2" fill="rgba(6,182,212,.1)"/>
+            <path d="M11 20C11.5 22 13 23.5 15 23.5" stroke="#06B6D4" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="5" y1="13" x2="25" y2="13" stroke="#06B6D4" stroke-width=".8" opacity=".3" stroke-dasharray="2,3">
+              <animate attributeName="y1" values="11;19;11" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="y2" values="11;19;11" dur="2s" repeatCount="indefinite"/>
+            </line>
+          </svg>
+        </div>
+        <div class="mod-tag">Sentinel Leak</div>
+        <h3 class="mod-h3">AI Leak Detection</h3>
+        <p class="mod-desc">Continuous, 24/7 network-wide leak detection that replaces annual acoustic surveys with AI intelligence — finding leaks weeks before they surface.</p>
+        <ul class="mod-feats">
+          <li class="mod-feat">Pressure transient analysis at 100 Hz</li>
+          <li class="mod-feat">DMA minimum-night-flow monitoring</li>
+          <li class="mod-feat">GPS-accurate leak localization ±15m</li>
+          <li class="mod-feat">Satellite SAR ground moisture overlay</li>
+        </ul>
+        <a href="#" class="mod-link">Explore module →</a>
+      </div>
+
+      <!-- COMPLY -->
+      <div class="mod-card reveal d3" data-m="co">
+        <div class="mod-icon">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <path d="M15 2L4 7V16C4 22 8.8 27.5 15 29C21.2 27.5 26 22 26 16V7L15 2Z" stroke="#10B981" stroke-width="2" fill="rgba(16,185,129,.1)"/>
+            <path d="M10 15L13.5 18.5L20 12" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="mod-tag">Sentinel Comply</div>
+        <h3 class="mod-h3">Compliance Reporting</h3>
+        <p class="mod-desc">Automates EPA, state, and international regulatory reports. Never miss a monitoring deadline or submit an incorrect form — ever again.</p>
+        <ul class="mod-feats">
+          <li class="mod-feat">Auto-generated CCRs &amp; DMRs by jurisdiction</li>
+          <li class="mod-feat">Compliance calendar &amp; deadline alerts</li>
+          <li class="mod-feat">Violation management &amp; public notifications</li>
+          <li class="mod-feat">Immutable cryptographic audit trail</li>
+        </ul>
+        <a href="#" class="mod-link">Explore module →</a>
+      </div>
+
+      <!-- ASSET -->
+      <div class="mod-card reveal d4" data-m="as">
+        <div class="mod-icon">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <circle cx="15" cy="15" r="4" stroke="#84CC16" stroke-width="2"/>
+            <path d="M15 1V5M15 25V29M1 15H5M25 15H29" stroke="#84CC16" stroke-width="2" stroke-linecap="round"/>
+            <path d="M5.6 5.6L8.4 8.4M21.6 21.6L24.4 24.4M5.6 24.4L8.4 21.6M21.6 8.4L24.4 5.6" stroke="#84CC16" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="7" y="22" width="16" height="3" rx="1.5" fill="rgba(132,204,22,.15)"/>
+            <rect x="7" y="22" width="10" height="3" rx="1.5" fill="#84CC16">
+              <animate attributeName="width" values="3;10;3" dur="4s" repeatCount="indefinite"/>
+            </rect>
+          </svg>
+        </div>
+        <div class="mod-tag">Sentinel Asset</div>
+        <h3 class="mod-h3">Asset Lifecycle Management</h3>
+        <p class="mod-desc">Predict which pipes will fail, when, and what it will cost. Transform reactive break-fix into risk-based capital planning.</p>
+        <ul class="mod-feats">
+          <li class="mod-feat">Asset Health Index 0–100 scoring</li>
+          <li class="mod-feat">Failure probability for 1, 3, 5-year horizons</li>
+          <li class="mod-feat">10-year capex planning &amp; scenario modeling</li>
+          <li class="mod-feat">AI CCTV defect classification (PACP/MACP)</li>
+        </ul>
+        <a href="#" class="mod-link">Explore module →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- wave → bg -->
+<div class="wdiv" style="background:white">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,18 C360,0 1080,36 1440,18 L1440,36 L0,36 Z" fill="#F0FAFE"/>
+  </svg>
+</div>
+
+<!-- ━━━ HOW IT WORKS ━━━ -->
+<section id="network">
+  <div class="container">
+    <div class="net-grid">
+      <div>
+        <div class="stag reveal">How It Works</div>
+        <h2 class="sec-h2 reveal" style="margin-bottom:0; text-align:left">From raw sensor data<br>to real decisions</h2>
+        <div class="net-steps">
+          <div class="net-step reveal d1">
+            <div class="snum">1</div>
+            <div class="sbody">
+              <h4>Connect your existing systems</h4>
+              <p>Read-only connectors pull from SCADA, AMI meters, LIMS, and GIS. Zero rip-and-replace. Live in 90 days.</p>
+            </div>
+          </div>
+          <div class="net-step reveal d2">
+            <div class="snum">2</div>
+            <div class="sbody">
+              <h4>AI learns your network's normal</h4>
+              <p>ML models train on 2+ years of historical data, establishing unique baselines for every pipe segment, pump station, and DMA.</p>
+            </div>
+          </div>
+          <div class="net-step reveal d3">
+            <div class="snum">3</div>
+            <div class="sbody">
+              <h4>Anomalies surface instantly</h4>
+              <p>Pressure, flow, or quality deviations trigger severity-scored alerts routed to the right team with recommended first actions.</p>
+            </div>
+          </div>
+          <div class="net-step reveal d4">
+            <div class="snum">4</div>
+            <div class="sbody">
+              <h4>Decisions drive measurable outcomes</h4>
+              <p>Field crews get precise work orders. Compliance reports auto-generate. Capital plans update dynamically. The system learns continuously.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANIMATED PIPE NETWORK -->
+      <div class="net-vis reveal d2">
+        <div class="nv-head">
+          <div class="nv-title">Live Network — Distribution Zone 4</div>
+          <div class="nv-live"><span class="live-dot"></span>LIVE</div>
+        </div>
+        <svg width="100%" viewBox="0 0 380 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Background -->
+          <rect width="380" height="240" rx="12" fill="#F8FEFF"/>
+          <!-- Pipe grid (background) -->
+          <line x1="40" y1="120" x2="340" y2="120" stroke="#E0F7FA" stroke-width="7" stroke-linecap="round"/>
+          <line x1="110" y1="120" x2="110" y2="55" stroke="#E0F7FA" stroke-width="5" stroke-linecap="round"/>
+          <line x1="110" y1="55" x2="200" y2="55" stroke="#E0F7FA" stroke-width="5" stroke-linecap="round"/>
+          <line x1="200" y1="55" x2="200" y2="120" stroke="#E0F7FA" stroke-width="5" stroke-linecap="round"/>
+          <line x1="155" y1="120" x2="155" y2="185" stroke="#E0F7FA" stroke-width="5" stroke-linecap="round"/>
+          <line x1="240" y1="120" x2="240" y2="185" stroke="#E0F7FA" stroke-width="5" stroke-linecap="round"/>
+          <!-- Active main pipe -->
+          <line x1="40" y1="120" x2="280" y2="120" stroke="#0891B2" stroke-width="4.5" stroke-linecap="round" opacity=".85" filter="url(#glow)"/>
+          <!-- Branch pipes -->
+          <line x1="110" y1="120" x2="110" y2="55" stroke="#22D3EE" stroke-width="3" opacity=".7"/>
+          <line x1="110" y1="55" x2="200" y2="55" stroke="#22D3EE" stroke-width="3" opacity=".7"/>
+          <line x1="200" y1="55" x2="200" y2="120" stroke="#22D3EE" stroke-width="3" opacity=".7"/>
+          <!-- Junction nodes -->
+          <circle cx="110" cy="120" r="7" fill="#0891B2" opacity=".9"/>
+          <circle cx="200" cy="120" r="7" fill="#0891B2" opacity=".9"/>
+          <circle cx="240" cy="120" r="7" fill="#0891B2" opacity=".9"/>
+          <circle cx="155" cy="120" r="7" fill="#0891B2" opacity=".9"/>
+          <circle cx="110" cy="55"  r="5" fill="#22D3EE" opacity=".85"/>
+          <circle cx="200" cy="55"  r="5" fill="#22D3EE" opacity=".85"/>
+          <!-- Source node -->
+          <circle cx="40"  cy="120" r="11" fill="#071E2F" stroke="#0891B2" stroke-width="2"/>
+          <text x="40" y="124" text-anchor="middle" font-size="7" fill="#22D3EE" font-family="monospace" font-weight="bold">SRC</text>
+          <!-- End nodes -->
+          <circle cx="340" cy="120" r="8" fill="#071E2F" stroke="#22D3EE" stroke-width="1.5" opacity=".55"/>
+          <circle cx="155" cy="185" r="6" fill="#071E2F" stroke="#0891B2" stroke-width="1.5" opacity=".65"/>
+          <circle cx="240" cy="185" r="6" fill="#071E2F" stroke="#0891B2" stroke-width="1.5" opacity=".65"/>
+          <!-- Pressure labels -->
+          <rect x="54" y="101" width="38" height="15" rx="4" fill="rgba(8,145,178,.1)" stroke="#0891B2" stroke-width=".5"/>
+          <text x="73" y="112" text-anchor="middle" font-size="8" fill="#0891B2" font-weight="700">4.2 bar</text>
+          <rect x="210" y="101" width="38" height="15" rx="4" fill="rgba(239,68,68,.08)" stroke="#EF4444" stroke-width=".5"/>
+          <text x="229" y="112" text-anchor="middle" font-size="8" fill="#EF4444" font-weight="700">1.8 bar</text>
+          <!-- LEAK ALERT at 285, 120 -->
+          <circle cx="285" cy="120" r="18" fill="none" stroke="#EF4444" stroke-width="1.5" opacity=".85">
+            <animate attributeName="r" values="9;24;9" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".85;0;.85" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="285" cy="120" r="9" fill="none" stroke="#EF4444" stroke-width="1" opacity=".5">
+            <animate attributeName="r" values="5;14;5" dur="2s" begin=".5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".5;0;.5" dur="2s" begin=".5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="285" cy="120" r="5" fill="#EF4444" filter="url(#glow)">
+            <animate attributeName="r" values="4;6;4" dur="1.2s" repeatCount="indefinite"/>
+          </circle>
+          <!-- Alert tooltip -->
+          <rect x="294" y="104" width="60" height="19" rx="5" fill="#FEF2F2" stroke="#EF4444" stroke-width=".8"/>
+          <text x="324" y="117" text-anchor="middle" font-size="8" fill="#EF4444" font-weight="800">⚠ LEAK ALERT</text>
+          <!-- Flow dots on main pipe -->
+          <circle r="5" fill="#10B981" filter="url(#glow)">
+            <animateMotion dur="3.2s" repeatCount="indefinite" path="M 40,120 L 285,120"/>
+          </circle>
+          <circle r="4" fill="#10B981" opacity=".65">
+            <animateMotion dur="3.2s" repeatCount="indefinite" begin="1.6s" path="M 40,120 L 285,120"/>
+          </circle>
+          <!-- Branch flow dot -->
+          <circle r="3.5" fill="#22D3EE" opacity=".85">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M 110,120 L 110,55 L 200,55 L 200,120"/>
+          </circle>
+          <!-- Legend -->
+          <circle cx="28" cy="220" r="5" fill="#10B981"/>
+          <text x="37" y="224" font-size="8.5" fill="#3D7A8A">Normal flow</text>
+          <circle cx="105" cy="220" r="5" fill="#EF4444"/>
+          <text x="114" y="224" font-size="8.5" fill="#3D7A8A">Leak detected</text>
+          <circle cx="190" cy="220" r="5" fill="#0891B2"/>
+          <text x="199" y="224" font-size="8.5" fill="#3D7A8A">Junction node</text>
+        </svg>
+        <div class="nv-tags">
+          <div class="nv-tag red">⚠ Leak candidate: G7-294 — est. 14 m³/hr</div>
+          <div class="nv-tag grn">✓ 847 segments normal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave → dark -->
+<div class="wdiv" style="background:#F0FAFE">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,0 C480,36 960,0 1440,18 L1440,36 L0,36 Z" fill="#0A3347"/>
+  </svg>
+</div>
+
+<!-- ━━━ DASHBOARD PREVIEW ━━━ -->
+<section id="dashboard">
+  <div class="container">
+    <div class="dash-intro reveal">
+      <div class="stag">Product Preview</div>
+      <h2 class="sec-h2">Everything unified. One view.</h2>
+      <p class="sec-p">The Zelta dashboard brings your network, alerts, compliance status, and asset health into a single, role-customisable interface.</p>
+    </div>
+    <div class="dbmk reveal d1">
+      <div class="dbmk-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot a"></div><div class="dot g"></div></div>
+        <div class="url-bar">app.zelta.io/dashboard/overview</div>
+      </div>
+      <div class="dbmk-body">
+        <div class="dbmk-side">
+          <div class="s-ico act" title="Overview">🌊</div>
+          <div class="s-ico" title="Network">🗺️</div>
+          <div class="s-ico" title="Leaks">💧</div>
+          <div class="s-ico" title="Compliance">📋</div>
+          <div class="s-ico" title="Assets">⚙️</div>
+          <div class="s-ico" title="Reports">📊</div>
+        </div>
+        <div class="dbmk-main">
+          <div class="dm-head">
+            <div>
+              <div class="dm-title">Network Overview — Mumbai Distribution Zone 3</div>
+              <div class="dm-sub">Last synced: 2 seconds ago · 847 assets monitored · 23 DMAs active</div>
+            </div>
+            <div class="live-badge">
+              <span style="width:6px;height:6px;background:#10B981;border-radius:50%;display:inline-block;animation:beacon 1.5s infinite;"></span>
+              LIVE
+            </div>
+          </div>
+          <div class="dm-grid">
+            <!-- MAP -->
+            <div class="dm-map">
+              <div class="dm-lbl">Distribution Network</div>
+              <svg width="100%" height="155" viewBox="0 0 290 145" fill="none">
+                <defs>
+                  <pattern id="g2" width="18" height="18" patternUnits="userSpaceOnUse">
+                    <path d="M 18 0 L 0 0 0 18" fill="none" stroke="rgba(255,255,255,.025)" stroke-width=".5"/>
+                  </pattern>
+                </defs>
+                <rect width="290" height="145" fill="url(#g2)"/>
+                <line x1="18" y1="72" x2="272" y2="72" stroke="#0891B2" stroke-width="3.5" opacity=".7"/>
+                <line x1="78" y1="72" x2="78" y2="28" stroke="#0891B2" stroke-width="2.5" opacity=".6"/>
+                <line x1="78" y1="28" x2="175" y2="28" stroke="#0891B2" stroke-width="2.5" opacity=".6"/>
+                <line x1="175" y1="28" x2="175" y2="72" stroke="#0891B2" stroke-width="2.5" opacity=".6"/>
+                <line x1="126" y1="72" x2="126" y2="115" stroke="#0891B2" stroke-width="2" opacity=".5"/>
+                <line x1="215" y1="72" x2="215" y2="115" stroke="#0891B2" stroke-width="2" opacity=".5"/>
+                <circle cx="78" cy="72" r="5" fill="#22D3EE"/>
+                <circle cx="126" cy="72" r="5" fill="#22D3EE"/>
+                <circle cx="175" cy="72" r="5" fill="#22D3EE"/>
+                <circle cx="215" cy="72" r="5" fill="#22D3EE"/>
+                <!-- Anomaly -->
+                <circle cx="195" cy="72" r="11" fill="none" stroke="#EF4444" stroke-width="1.2">
+                  <animate attributeName="r" values="6;16;6" dur="2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values=".9;0;.9" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="195" cy="72" r="4" fill="#EF4444"/>
+                <text x="195" y="60" text-anchor="middle" font-size="7" fill="#F87171" font-weight="800">ALERT</text>
+                <!-- Flow -->
+                <circle r="3.5" fill="#10B981" opacity=".9">
+                  <animateMotion dur="4s" repeatCount="indefinite" path="M 18,72 L 195,72"/>
+                </circle>
+                <circle r="2.5" fill="#10B981" opacity=".55">
+                  <animateMotion dur="4s" repeatCount="indefinite" begin="2s" path="M 18,72 L 195,72"/>
+                </circle>
+                <circle r="3" fill="#22D3EE" opacity=".75">
+                  <animateMotion dur="3.5s" repeatCount="indefinite" path="M 78,72 L 78,28 L 175,28 L 175,72"/>
+                </circle>
+              </svg>
+            </div>
+            <!-- METRIC CARDS -->
+            <div class="dm-metrics">
+              <div class="dm-mc">
+                <div>
+                  <div class="dm-ml">Total Flow Volume</div>
+                  <div class="dm-mv cy">2.4M <span style="font-size:13px;font-weight:400">L/hr</span></div>
+                </div>
+                <div class="dm-ch up">+2.1%</div>
+              </div>
+              <div class="dm-mc alrt">
+                <div>
+                  <div class="dm-ml">Active Alerts</div>
+                  <div class="dm-mv rd">3</div>
+                </div>
+                <div class="dm-ch dn">+2</div>
+              </div>
+              <div class="dm-mc">
+                <div>
+                  <div class="dm-ml">Network Health Score</div>
+                  <div class="dm-mv gn">94.2%</div>
+                </div>
+                <div class="dm-ch up">↑ 0.4</div>
+              </div>
+            </div>
+          </div>
+          <!-- ALERTS -->
+          <div class="dm-alerts">
+            <div class="dm-atitle">Recent Alerts</div>
+            <div class="dm-ai">
+              <div class="ai-dot" style="background:#EF4444;animation:beacon 1.5s infinite;"></div>
+              <div class="ai-txt">Pressure anomaly — Grid G7-294 · Probable leak · Est. 14 m³/hr</div>
+              <div class="ai-t">2 min ago</div>
+            </div>
+            <div class="dm-ai">
+              <div class="ai-dot" style="background:#F59E0B;"></div>
+              <div class="ai-txt">Asset health degraded — Pump Station 4 · AHI dropped to 61 (threshold: 65)</div>
+              <div class="ai-t">18 min ago</div>
+            </div>
+            <div class="dm-ai">
+              <div class="ai-dot" style="background:#10B981;"></div>
+              <div class="ai-txt">Compliance · Q3 DMR submitted to MPCB · All parameters within permit limits</div>
+              <div class="ai-t">2 hrs ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave → dark ocean -->
+<div class="wdiv" style="background:#0A3347">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,18 C480,0 960,36 1440,18 L1440,36 L0,36 Z" fill="#071E2F"/>
+  </svg>
+</div>
+
+<!-- ━━━ METRICS ━━━ -->
+<section id="metrics">
+  <div class="container">
+    <div class="sec-hd reveal" style="margin-bottom:64px">
+      <div class="stag">Impact at Scale</div>
+      <h2 class="sec-h2" style="color:white">Numbers that move the industry</h2>
+    </div>
+    <div class="met-grid">
+      <div class="reveal d1">
+        <div class="met-num c1"><span class="counter" data-target="30">0</span><span class="met-sf">%</span></div>
+        <div class="met-lbl">Average NRW reduction<br>in the first year</div>
+      </div>
+      <div class="reveal d2">
+        <div class="met-num c2"><span class="counter" data-target="8">0</span><span class="met-sf">wk</span></div>
+        <div class="met-lbl">Earlier leak detection<br>vs. traditional methods</div>
+      </div>
+      <div class="reveal d3">
+        <div class="met-num c3"><span class="counter" data-target="90">0</span><span class="met-sf">+</span></div>
+        <div class="met-lbl">EPA &amp; state compliance<br>forms fully automated</div>
+      </div>
+      <div class="reveal d4">
+        <div class="met-num c4"><span class="counter" data-target="12">0</span><span class="met-sf">x</span></div>
+        <div class="met-lbl">Average LTV/CAC<br>across customer cohorts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave → white -->
+<div class="wdiv" style="background:#071E2F">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,0 C360,36 1080,0 1440,28 L1440,36 L0,36 Z" fill="white"/>
+  </svg>
+</div>
+
+<!-- ━━━ INDUSTRIES ━━━ -->
+<section id="industries">
+  <div class="container">
+    <div class="sec-hd reveal">
+      <div class="stag">Who We Serve</div>
+      <h2 class="sec-h2">Built for every water operator</h2>
+      <p class="sec-p">Municipal utility serving 50,000 people or multinational pharmaceutical plant — if water flows through your infrastructure, Zelta is built for you.</p>
+    </div>
+    <div class="ind-grid">
+      <div class="ind-card reveal d1">
+        <div class="ind-icon">🏛️</div>
+        <div class="ind-name">Municipal Utilities</div>
+        <div class="ind-desc">Populations from 10K–5M. Full platform: monitoring, leak detection, compliance, and asset planning. Supports EPA/state primacy reporting and 50-state form library.</div>
+      </div>
+      <div class="ind-card reveal d2">
+        <div class="ind-icon">🏭</div>
+        <div class="ind-name">Food &amp; Beverage</div>
+        <div class="ind-desc">Water as production input and wastewater output — double regulatory exposure. FDA, FSMA, and NPDES compliance. Process water quality monitoring critical for product safety.</div>
+      </div>
+      <div class="ind-card reveal d3">
+        <div class="ind-icon">💊</div>
+        <div class="ind-name">Pharmaceutical</div>
+        <div class="ind-desc">USP purified water standards, 21 CFR Part 11 audit trails, FDA inspection readiness. The highest compliance bar in any industry — and the highest willingness to pay.</div>
+      </div>
+      <div class="ind-card reveal d1">
+        <div class="ind-icon">⛏️</div>
+        <div class="ind-name">Mining &amp; Resources</div>
+        <div class="ind-desc">Acid mine drainage monitoring, remote connectivity via edge computing, and environmental discharge permit compliance in locations where surveyors can't easily reach.</div>
+      </div>
+      <div class="ind-card reveal d2">
+        <div class="ind-icon">🏗️</div>
+        <div class="ind-name">Engineering Consultancies</div>
+        <div class="ind-desc">White-label or co-branded platform. Serve multiple utility clients from one pane of glass. Offer technology-enabled managed services to differentiate from competitors.</div>
+      </div>
+      <div class="ind-card reveal d3">
+        <div class="ind-icon">🌱</div>
+        <div class="ind-name">Industrial Water Reuse</div>
+        <div class="ind-desc">Wastewater treatment and recycling operations. Effluent quality monitoring, reuse compliance, and treatment process optimisation to reduce water consumption and discharge costs.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave → founder -->
+<div class="wdiv" style="background:white">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,28 C360,0 1080,36 1440,8 L1440,36 L0,36 Z" fill="#E0F7FA"/>
+  </svg>
+</div>
+
+<!-- ━━━ FOUNDER ━━━ -->
+<section id="founder">
+  <div class="container">
+    <div class="fo-grid">
+
+      <!-- LEFT: AVATAR -->
+      <div class="fo-left reveal">
+        <div class="fo-aw">
+          <svg class="fo-ring" viewBox="0 0 220 220" fill="none">
+            <circle cx="110" cy="110" r="106" stroke="#06B6D4" stroke-width="1.5" stroke-dasharray="8,6" opacity=".38">
+              <animateTransform attributeName="transform" type="rotate" from="0 110 110" to="360 110 110" dur="22s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="110" cy="110" r="100" stroke="#10B981" stroke-width=".8" stroke-dasharray="3,12" opacity=".28">
+              <animateTransform attributeName="transform" type="rotate" from="360 110 110" to="0 110 110" dur="16s" repeatCount="indefinite"/>
+            </circle>
+            <!-- Water drop ornaments on ring -->
+            <circle cx="110" cy="4" r="3" fill="#22D3EE" opacity=".5">
+              <animateTransform attributeName="transform" type="rotate" from="0 110 110" to="360 110 110" dur="22s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="110" cy="216" r="3" fill="#10B981" opacity=".5">
+              <animateTransform attributeName="transform" type="rotate" from="0 110 110" to="360 110 110" dur="22s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <div class="fo-av">
+            <span class="fo-ini">RJ</span>
+          </div>
+        </div>
+        <div class="fo-name-card">
+          <div class="fo-name">Rishabh Jain</div>
+          <div class="fo-title">Founder &amp; CEO, Zelta Technologies</div>
+          <div class="fo-socials">
+            <div class="fo-soc" title="LinkedIn">in</div>
+            <div class="fo-soc" title="Twitter / X">𝕏</div>
+            <div class="fo-soc" title="Email">✉</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: BIO -->
+      <div class="reveal d2">
+        <div class="stag" style="color:var(--teal)">Founder's Story</div>
+        <h2 class="fo-h2">Built by someone who lived the problem firsthand</h2>
+        <blockquote class="fo-q">
+          "Every utility director I spoke with said the same thing: we're drowning in data and starving for decisions. That's the exact gap Zelta was built to close."
+        </blockquote>
+        <p class="fo-bio">
+          Rishabh Jain founded Zelta after years at the intersection of water infrastructure engineering and intelligent data systems — watching firsthand as a trillion-dollar infrastructure sector was managed with spreadsheets, aging SCADA systems with no intelligence layer, and institutional knowledge locked in the heads of engineers approaching retirement.
+        </p>
+        <p class="fo-bio">
+          Before Zelta, Rishabh led analytics and digitisation engagements across municipal water systems and large-scale industrial water facilities. He saw compliance officers drowning in manual reporting cycles, field crews dispatched by customer complaints instead of predictive intelligence, and capital budgets allocated to the noisiest pipes — not the most at-risk ones.
+        </p>
+        <p class="fo-bio">
+          Zelta is his answer: the AI platform that gives water operators the intelligence layer their infrastructure has always needed — activating the data they already have, without replacing a single piece of existing equipment.
+        </p>
+        <div class="fo-creds">
+          <span class="fo-cred">Water Infrastructure Analytics</span>
+          <span class="fo-cred">AI / ML Systems</span>
+          <span class="fo-cred">SCADA &amp; OT Integration</span>
+          <span class="fo-cred">Regulatory Compliance</span>
+          <span class="fo-cred">B2B SaaS</span>
+          <span class="fo-cred">Climate Tech</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave → cta -->
+<div class="wdiv" style="background:linear-gradient(135deg,#E0F7FA,#F0FFF4)">
+  <svg viewBox="0 0 1440 36" preserveAspectRatio="none">
+    <path d="M0,18 C480,36 960,0 1440,18 L1440,36 L0,36 Z" fill="#0891B2"/>
+  </svg>
+</div>
+
+<!-- ━━━ CTA ━━━ -->
+<section id="cta">
+  <div class="container cta-inner">
+    <div class="reveal">
+      <h2 class="cta-h2">Stop losing water.<br>Start seeing everything.</h2>
+      <p class="cta-p">Join the utilities and industrial operators using Zelta to detect leaks earlier, automate compliance, and extend infrastructure life.</p>
+      <div class="cta-row">
+        <input type="email" class="cta-inp" id="cta-email" placeholder="Enter your work email">
+        <button class="btn-cta" id="cta-btn">Request a Demo</button>
+      </div>
+      <p class="cta-note">No commitment required · 90-day pilot · Results guaranteed or you walk away</p>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ FOOTER ━━━ -->
+<footer>
+  <div class="container">
+    <div class="ft-top">
+      <div>
+        <a href="#" class="nav-logo" style="font-size:22px">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+            <path d="M16 3C16 3 6 14 6 20.5C6 25.8 10.5 30 16 30C21.5 30 26 25.8 26 20.5C26 14 16 3 16 3Z" fill="url(#fg2)" stroke="rgba(34,211,238,.3)" stroke-width="1"/>
+            <defs>
+              <linearGradient id="fg2" x1="6" y1="3" x2="26" y2="30" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#22D3EE"/>
+                <stop offset="100%" stop-color="#0891B2"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          zelta
+        </a>
+        <p class="ft-desc">AI-powered intelligence for water &amp; waste infrastructure. Monitor, detect, comply, and plan — all in one unified platform.</p>
+      </div>
+      <div>
+        <div class="ft-col-t">Product</div>
+        <div class="ft-links">
+          <a href="#">Sentinel Monitor</a>
+          <a href="#">Sentinel Leak</a>
+          <a href="#">Sentinel Comply</a>
+          <a href="#">Sentinel Asset</a>
+          <a href="#">Integrations</a>
+        </div>
+      </div>
+      <div>
+        <div class="ft-col-t">Company</div>
+        <div class="ft-links">
+          <a href="#founder">About &amp; Founder</a>
+          <a href="#">Careers</a>
+          <a href="#">Blog</a>
+          <a href="#">Press</a>
+          <a href="#">Partners</a>
+        </div>
+      </div>
+      <div>
+        <div class="ft-col-t">Resources</div>
+        <div class="ft-links">
+          <a href="#">Documentation</a>
+          <a href="#">Case Studies</a>
+          <a href="#">ROI Calculator</a>
+          <a href="#">Compliance Library</a>
+          <a href="#cta">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <div class="ft-copy">© 2025 Zelta Technologies, Inc. All rights reserved.</div>
+      <div class="ft-tg">Protecting every drop.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ━━━ SCRIPTS ━━━ -->
+<script>
+  /* NAV SCROLL */
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+
+  /* WATER RIPPLE CANVAS */
+  const canvas  = document.getElementById('ripple-canvas');
+  const ctx     = canvas.getContext('2d');
+  let ripples   = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = document.getElementById('hero').offsetHeight;
+  }
+
+  function addRipple(x, y, big = false) {
+    ripples.push({ x, y, r: big ? 10 : 5, op: big ? .72 : .46, spd: big ? 2.8 : 1.9, lw: big ? 2.5 : 1.5 });
+  }
+
+  function drawFrame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ripples = ripples.filter(r => r.op > .005);
+    ripples.forEach(r => {
+      /* outer ring */
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(34,211,238,${r.op})`;
+      ctx.lineWidth   = r.lw;
+      ctx.stroke();
+      /* inner ring */
+      if (r.r > 28) {
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.r * .58, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(16,185,129,${r.op * .38})`;
+        ctx.lineWidth   = r.lw * .55;
+        ctx.stroke();
+      }
+      r.r  += r.spd;
+      r.op -= r.op * .019;
+      r.lw  = Math.max(.3, r.lw - .012);
+    });
+    requestAnimationFrame(drawFrame);
+  }
+
+  /* auto ambient ripples */
+  function ambient() {
+    addRipple(Math.random() * canvas.width, Math.random() * canvas.height);
+    setTimeout(ambient, 1400 + Math.random() * 1800);
+  }
+
+  document.getElementById('hero').addEventListener('click', e => {
+    const r = canvas.getBoundingClientRect();
+    addRipple(e.clientX - r.left, e.clientY - r.top, true);
+  });
+
+  resize(); drawFrame(); ambient();
+  window.addEventListener('resize', resize, {passive:true});
+
+  /* SCROLL REVEAL */
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: .11 });
+  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+  /* COUNTER ANIMATION */
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function animCount(el, target, dur = 2200) {
+    const t0 = Date.now();
+    const tick = () => {
+      const p = Math.min((Date.now() - t0) / dur, 1);
+      el.textContent = Math.floor(easeOutCubic(p) * target);
+      if (p < 1) requestAnimationFrame(tick); else el.textContent = target;
+    };
+    requestAnimationFrame(tick);
+  }
+  const co = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !e.target.dataset.done) {
+        e.target.dataset.done = '1';
+        animCount(e.target, +e.target.dataset.target);
+      }
+    });
+  }, { threshold: .6 });
+  document.querySelectorAll('.counter').forEach(el => co.observe(el));
+
+  /* MODULE CARD CURSOR GLOW */
+  document.querySelectorAll('.mod-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const {left, top, width, height} = card.getBoundingClientRect();
+      const x = ((e.clientX - left) / width) * 100;
+      const y = ((e.clientY - top) / height) * 100;
+      card.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(6,182,212,.06) 0%, transparent 55%), white`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.background = ''; });
+  });
+
+  /* CTA SUBMIT */
+  document.getElementById('cta-btn').addEventListener('click', () => {
+    const inp = document.getElementById('cta-email');
+    const v   = inp.value.trim();
+    if (!v || !v.includes('@') || !v.includes('.')) {
+      inp.style.borderColor = 'rgba(239,68,68,.65)';
+      inp.placeholder = 'Please enter a valid work email';
+      setTimeout(() => { inp.style.borderColor = ''; inp.placeholder = 'Enter your work email'; }, 2400);
+      return;
+    }
+    const btn = document.getElementById('cta-btn');
+    btn.textContent = '✓ Request Sent!';
+    btn.style.cssText += 'background:#D1FAE5;color:#065F46;';
+    inp.value = '';
+    setTimeout(() => { btn.textContent = 'Request a Demo'; btn.style.background = ''; btn.style.color = ''; }, 4500);
+  });
+
+  /* SMOOTH NAV LINKS */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+    });
+  });
+</script>
+</body>
+</html>
